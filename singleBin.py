@@ -7,7 +7,7 @@ class singleBin:
 		self._name = name;
 		self._tag  = tag;
 		self._index  = index;
-		self._binLabels = binLabels;
+		self._binLabels = binLabels; #binLabels will be list of tmpContributions like sig, WTopSL, WTopSLHighW, WTopHad, WTopHadHighW,zvv,qcd 
 		self._rates = [];
 		self._allLines = [];
 
@@ -71,7 +71,7 @@ class singleBin:
 		self._allLines.append(line);
 
 		self._allLines.append("------------ \n");
-
+#Ex. addSystematic(signal_lumiunc,lnN,'sig',bincontent[i]): sysname=signal_lumiunc, systype=lnN, bins='sig', RA2bin_T1tttt_1500_100_fast_lumiuncUp.binContent[i]
 	def addSystematic(self,sysname,systype,bins,val):
 		#print sysname
 		# print "length rates = ",len(self._rates)
@@ -79,19 +79,22 @@ class singleBin:
 		line = "";
 		line += sysname + " " + systype + " ";
 		#bin=0;
+#*AR-180516: loop over tmpContributions
 		for i in range(len(self._binLabels)):
 			#print len(self._binLabels)
 			if self._binLabels[i] in bins:
-				#print self._binLabels[i]
+#binLabels will be list of tmpContributions like sig, WTopSL, WTopSLHighW, WTopHad, WTopHadHighW,zvv,qcd 		
+		#print self._binLabels[i]
 				if self._rates[i] < 0.000001 and systype == 'lnU': line += str(val*1) + " ";
 				else: 
 					if(val>-99.):
-						line += str(val) + " ";
+						line += str(val) + " "; # print bincontent in the column for 'sig' else print "-"
 					else: 
 						line += " - ";
 			else: line += "- ";
 		line += "\n";
 		self._allLines.append(line);
+#Ex. addCorrelSystematic(llp_ControlStat_NJets0_BTags0_MHT0_HT0,lnN,['WTopSL','WTopHad'],LLControlStatUnc_Hist_bincontent,HadTauStatUnc_bincontent)
 
 	def addCorrelSystematic(self,sysname,systype,bins,val1, val2):
                 #print sysname
@@ -99,17 +102,19 @@ class singleBin:
                 line = "";
                 line += sysname + " " + systype + " ";
                 bin=0;
+#bin=0 for WTopSL contribution and bin=1 for WTopHad contribution
                 for i in range(len(self._binLabels)):
                         #print len(self._binLabels)
+#binLabels will be list of tmpContributions like sig, WTopSL, WTopSLHighW, WTopHad, WTopHadHighW,zvv,qcd 		
                         if self._binLabels[i] in bins:
                                 #print self._binLabels[i]
                                 if self._rates[i] < 0.000001 and systype == 'lnU': line += str(val*1) + " ";
                                 else:
 					if val1>-99. and val2>-99.:
                                         	if(bin==0):
-                                                	line += str(val1) + " ";
+                                                	line += str(val1) + " "; #adds LL stat unc
 						if(bin==1):
-							line += str(val2) + " ";
+							line += str(val2) + " "; # adds Hadtau stat unc
                                         else:
                                                 line += " - ";
 					bin+=1
@@ -136,12 +141,14 @@ class singleBin:
                         else: line += " - ";
                 line += "\n";
                 self._allLines.append(line);
+#Ex.  #addGammaCorrelSystematic(HighWeightStatUnc_NJets0_BTags0_MHT0_HT0, 'gmN',['WTopSLHighW','WTopHadHighW'],0,0L/1L_bincontent,0.25)
+
         def addGammaCorrelSystematic(self,sysname,systype,bins,valCS,val1,val2):
                 #print sysname
                 # print "length rates = ",len(self._rates)
                 #print bins,val
                 line = "";
-                line += sysname + " " + systype + " "+ "%d " %int(valCS);
+                line += sysname + " " + systype + " "+ "%d " %int(valCS); #valCS=0
                 bin=0;
                 for i in range(len(self._binLabels)):
                         #print len(self._binLabels)
@@ -177,6 +184,8 @@ class singleBin:
                         else: line += "- ";
                 line += "\n";
                 self._allLines.append(line);	
+#similar to addSystematic, except that instead of one value for systematics, it prints down_bincontent[i]/up_bincontent[i]
+# if bincontent is 0 or less, it is taken as 0.01.
 	def addAsymSystematic(self,sysname,systype,bins,valup, valdown ):
 		line = "";
 		line += sysname + " " + systype + " ";

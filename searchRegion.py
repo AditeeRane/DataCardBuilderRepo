@@ -23,20 +23,24 @@ class searchRegion:
 
 		# if len(histograms) != len(self._binLabels): 
 		# 	raise Exception("There is a mismatch in histogram input")
+#*AR-180516: loop over number of bins
 
 		for i in range(self._nBins):
 			self._singleBins[i].setRates( rateinputs[i], normalize );
 			if len(rateinputs[i]) != len(self._binLabels[i]):
 				print  len(rateinputs[i]),len(self._binLabels[i])
 				raise Exception("There is a mismatch in this bin of this signal region between rates and n contributions");
+#Ex. signalRegion.addSystematicsLine('lnN',['sig'],LumiUnc)=signalRegion.addSystematicsLine('lnN',['sig'],RA2bin_T1tttt_1500_100_fast_lumiuncUp)
 	def addSystematicsLine(self,systype,channel,hist):
 		for i in range(self._nBins):
-			 self._singleBins[i].addSystematic( hist.GetXaxis().GetBinLabel(i+1), systype, channel, hist.GetBinContent(i+1) );
+			 self._singleBins[i].addSystematic( hist.GetXaxis().GetBinLabel(i+1), systype, channel, hist.GetBinContent(i+1) ); #addSystematic(signal_lumiunc,lnN,sig,bincontent[i])
 
 	def addSystematicsLineAsymShape(self,systype,channel,histup,histdown):
 		for i in range(self._nBins):
-			 self._singleBins[i].addAsymSystematic( histup.GetXaxis().GetBinLabel(i+1), systype, channel, histup.GetBinContent(i+1),histdown.GetBinContent(i+1) );
+			 self._singleBins[i].addAsymSystematic( histup.GetXaxis().GetBinLabel(i+1), systype, channel, histup.GetBinContent(i+1),histdown.GetBinContent(i+1) );  #addAsymSystematic(signal_lumiunc,lnN,sig,up_bincontent[i],down_bincontent[i])
 
+#signalRegion.addCorrelSystematicLine('lnN', ['WTopSL','WTopHad'],LLControlStatUnc_Hist,HadTauStatUnc)
+#addCorrelSystematic(llp_ControlStat_NJets0_BTags0_MHT0_HT0,lnN,['WTopSL','WTopHad'],LLControlStatUnc_Hist_bincontent,HadTauStatUnc_bincontent)
         def addCorrelSystematicLine(self,systype,channel,hist1,hist2):
                 for i in range(self._nBins):
                                 self._singleBins[i].addCorrelSystematic( hist1.GetXaxis().GetBinLabel(i+1), systype, channel, hist1.GetBinContent(i+1),hist2.GetBinContent(i+1) );		
@@ -48,12 +52,14 @@ class searchRegion:
 					#for j in range(len(channel)):
 					sysname=val1.GetXaxis().GetBinLabel(i+1)
                                         self._singleBins[i].addGammaSystematic( valCS.GetXaxis().GetBinLabel(i+1),'gmN', channel, valCS.GetBinContent(i+1),val1.GetBinContent(i+1));
-
+#Ex. signalRegion.addCorrelGammaSystematic(['WTopSLHighW','WTopHadHighW'],CSZero,LLAvgHeight_Hist,HadTauHighW)
+#CSZero:hist with bincontent=0
+#HadTauHighW:histogram with bincontent=0.25
         def addCorrelGammaSystematic(self,channel,valCS,val1,val2):
                 for i in range(self._nBins):
 					#for j in range(len(channel)):
-					sysname=val1.GetXaxis().GetBinLabel(i+1)+"_StatUnc"
-                                        self._singleBins[i].addGammaCorrelSystematic( val1.GetXaxis().GetBinLabel(i+1),'gmN', channel, valCS.GetBinContent(i+1),val1.GetBinContent(i+1),val2.GetBinContent(i+1) );
+					sysname=val1.GetXaxis().GetBinLabel(i+1)+"_StatUnc"  #HighWeightStatUnc_NJets0_BTags0_MHT0_HT0_StatUnc
+                                        self._singleBins[i].addGammaCorrelSystematic( val1.GetXaxis().GetBinLabel(i+1),'gmN', channel, valCS.GetBinContent(i+1),val1.GetBinContent(i+1),val2.GetBinContent(i+1) ); #addGammaCorrelSystematic(HighWeightStatUnc_NJets0_BTags0_MHT0_HT0, 'gmN',['WTopSLHighW','WTopHadHighW'],0,0L/1L bincontent,0.25)
 	def addSingleSystematic(self,sysname,systype,channel,val,identifier='',index=None):
 		
 		#print "Looking for ",identifier;
