@@ -144,11 +144,10 @@ class singleBin:
 #Ex.  #addGammaCorrelSystematic(HighWeightStatUnc_NJets0_BTags0_MHT0_HT0, 'gmN',['WTopSLHighW','WTopHadHighW'],0,0L/1L_bincontent,0.25)
 
         def addGammaCorrelSystematic(self,sysname,systype,bins,valCS,val1,val2):
-                #print sysname
                 # print "length rates = ",len(self._rates)
                 #print bins,val
                 line = "";
-                line += sysname + " " + systype + " "+ "%d " %int(valCS); #valCS=0
+                line += sysname + " " + systype + " "+ "%d " %int(valCS);
                 bin=0;
                 for i in range(len(self._binLabels)):
                         #print len(self._binLabels)

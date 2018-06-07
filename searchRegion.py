@@ -58,8 +58,9 @@ class searchRegion:
         def addCorrelGammaSystematic(self,channel,valCS,val1,val2):
                 for i in range(self._nBins):
 					#for j in range(len(channel)):
-					sysname=val1.GetXaxis().GetBinLabel(i+1)+"_StatUnc"  #HighWeightStatUnc_NJets0_BTags0_MHT0_HT0_StatUnc
-                                        self._singleBins[i].addGammaCorrelSystematic( val1.GetXaxis().GetBinLabel(i+1),'gmN', channel, valCS.GetBinContent(i+1),val1.GetBinContent(i+1),val2.GetBinContent(i+1) ); #addGammaCorrelSystematic(HighWeightStatUnc_NJets0_BTags0_MHT0_HT0, 'gmN',['WTopSLHighW','WTopHadHighW'],0,0L/1L bincontent,0.25)
+					sysname=val1.GetXaxis().GetBinLabel(i+1)
+                                        self._singleBins[i].addGammaCorrelSystematic( val1.GetXaxis().GetBinLabel(i+1),'gmN', channel, valCS.GetBinContent(i+1),val1.GetBinContent(i+1),val2.GetBinContent(i+1) );
+#Ex.addGammaCorrelSystematic(HighWeightStatUnc_NJets0_BTags0_MHT0_HT0, 'gmN',['WTopSLHighW','WTopHadHighW'],0,0L/1L bincontent,0.25)
 	def addSingleSystematic(self,sysname,systype,channel,val,identifier='',index=None):
 		
 		#print "Looking for ",identifier;

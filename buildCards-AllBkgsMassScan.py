@@ -115,17 +115,83 @@ if __name__ == '__main__':
 	tagsForSignalRegion = binLabelsToList(CorrSigHist);	
 	print "tagsForSignalRegion ",tagsForSignalRegion
 #AR-180427: reads data prediction histograms related to LL:totalPred_LL, avgWeight_0L1L,ControlStatUnc. 
+
+	LLPlusHadTauAvg_file=TFile(idir+"/InputsForLimits_data_formatted_LLPlusHadTau.root");
+	#LLPlusHadTau_file = TFile(idir+"/LLPlusHadTauPrediction.root");
+	LLPlusHadTauPrediction_Hist=LLPlusHadTauAvg_file.Get("totalPred_LLPlusHadTau")
+	LLPlusHadTauControlStatistics=LLPlusHadTauAvg_file.Get("DataCSStatistics")		
+	LLPlusHadTauControlStatUnc_Hist=LLPlusHadTauAvg_file.Get("DataCSStatErr")
+	LLPlusHadTauTF=LLPlusHadTauAvg_file.Get("LLPlusHadTauTF")
+	LLPlusHadTauTFStatUnc=LLPlusHadTauAvg_file.Get("LLPlusHadTauTFErr")
+	LLPlusHadTauSysBMistagDn=LLPlusHadTauAvg_file.Get("totalPredBMistagDown_LLPlusHadTau")
+	LLPlusHadTauSysJECDn=LLPlusHadTauAvg_file.Get("totalPred_JECSysDown_LLPlusHadTau")
+	LLPlusHadTauSysMTDn=LLPlusHadTauAvg_file.Get("totalPredMTWSysDown_LLPlusHadTau")	
+	LLPlusHadTauAccPDFSysDn=LLPlusHadTauAvg_file.Get("totalPredLepAccSysDown_LLPlusHadTau")
+	LLPlusHadTauQScaleSysDn=LLPlusHadTauAvg_file.Get("totalPredLepAccQsquareSysDown_LLPlusHadTau")
+	LLPlusHadTauSysIsoDn=LLPlusHadTauAvg_file.Get("totalPredMuIsoSysDown_LLPlusHadTau")	
+	LLPlusHadTauSysRecoDn=LLPlusHadTauAvg_file.Get("totalPredMuRecoSysDown_LLPlusHadTau")	
+
+
+
+
+
+
+
 	LL_file=TFile(idir+"LLPrediction_combined.root");
+	LLAvg_file=TFile(idir+"/InputsForLimits_data_formatted_LL.root");
 	#LL_file = TFile(idir+"/LLPrediction.root");
-	LLPrediction_Hist=LL_file.Get("Prediction_data/totalPred_LL")		
-	#totalCS_LL=LL_file.Get("totalCS_LL")
-	LLAvgHeight_Hist=LL_file.Get("Prediction_data/avgWeight_0L1L")
-	LLControlStatUnc_Hist=LL_file.Get("Prediction_data/totalPredControlStat_LL")	#AR-180427: data prediction related to hadtau
+	LLPrediction_Hist=LLAvg_file.Get("totalPred_LL")
+	LLControlStatistics=LLAvg_file.Get("DataCSStatistics")		
+	LLControlStatUnc_Hist=LLAvg_file.Get("DataCSStatErr")
+	LLTF=LLAvg_file.Get("LLTF")
+	LLTFStatUnc=LLAvg_file.Get("LLTFErr")
+	LLSysBMistagDn=LLAvg_file.Get("totalPredBMistagDown_LL")
+	LLSysJECDn=LLAvg_file.Get("totalPred_JECSysDown_LL")
+	LLSysMTDn=LLAvg_file.Get("totalPredMTWSysDown_LL")	
+	LLAccPDFSysDn=LLAvg_file.Get("totalPredLepAccSysDown_LL")
+	LLQScaleSysDn=LLAvg_file.Get("totalPredLepAccQsquareSysDown_LL")
+	LLSysIsoDn=LLAvg_file.Get("totalPredMuIsoSysDown_LL")	
+	LLSysRecoDn=LLAvg_file.Get("totalPredMuRecoSysDown_LL")	
+
+	HadTauAvg_file = TFile(idir+"/InputsForLimits_data_formatted.root");
+	HadTauPrediction=HadTauAvg_file.Get("searchBin_nominal");
+	HadTauStatUnc=LLAvg_file.Get("DataCSStatErr")
+	HadTauTF=HadTauAvg_file.Get("HadTauTF")
+	HadTauTFStatUnc=HadTauAvg_file.Get("HadTauTFErr");
+	HadTauBMistagDn=HadTauAvg_file.Get("totalPredBMistagDown_HadTau")
+	HadTauJECDn=HadTauAvg_file.Get("totalPredJECSysDown_HadTau")
+	HadTauMTSysDn=HadTauAvg_file.Get("totalPredMTSysDown_LL")	
+	HadTauAccPDFSysDn=HadTauAvg_file.Get("totalPredPDFDown_HadTau")
+	HadTauAccQScaleDn=HadTauAvg_file.Get("totalPredScaleDown_HadTau");
+	HadTauMuIsoDn=HadTauAvg_file.Get("totalPredMuIsoSysDown_LL")
+	HadTauMuRecoDn=HadTauAvg_file.Get("totalPredMuRecoSysDown_LL")
+
+
+
+
+
+
+	'''
+	LLControlStatUnc_Hist=LLAvg_file.Get("totalPred_LL").Clone("totalPredControlStat_LL")
+
+	for i in range(1, LLPrediction_Hist.GetNbinsX()+1):
+		print "i", i, "LLPrediction ", LLPrediction_Hist.GetBinContent(i),"LLStatUnc ", LLControlStatUnc_Hist.GetBinContent(i) 
+		if LLPrediction_Hist.GetBinContent(i)>0.0: LLControlStatUnc_Hist.SetBinContent(i,1.0+LLPrediction_Hist.GetBinError(i)/LLPrediction_Hist.GetBinContent(i));
+		else:LLControlStatUnc_Hist.SetBinContent(i,1.0+LLPrediction_Hist.GetBinError(i))
+
+
+	'''
+#	LLControlStatUnc_Hist=LL_file.Get("Prediction_data/totalPredControlStat_LL")	#AR-180427: data prediction related to hadtau
 # reads nominal data prediction
 	HadTau_file = TFile(idir+"/HadTauEstimation_data.root");
-	HadTauPrediction=HadTau_file.Get("searchBin_nominal");
+#	HadTauAvg_file = TFile(idir+"/HadTauDataPredDirectbyAvgTF.root");
+
+#	HadTauPrediction=HadTauAvg_file.Get("h_prediction");
 #AR-180430:This I do not understand. HadTauStatUnc should have just saved errors on searchBin_nominal. But this histogram is reset correctly later so we do not need this loop.
-	HadTauStatUnc=HadTau_file.Get("searchBin_nominal").Clone("HadTauStatUnc")
+#	HadTauStatUnc=HadTau_file.Get("searchBin_nominal").Clone("HadTauStatUnc")
+#	HadTauStatUnc=HadTauAvg_file.Get("DataPredErr_HadTau");
+#	HadTauStatUnc=HadTauAvg_file.Get("h_Prediction").Clone("HadTauStatUnc")
+# *AR-180529:Stat error on TF
 	'''
 	for i in range(1,175):
 		if HadTauPrediction.GetBinContent(i)>0.0:HadTauStatUnc.SetBinContent(1, 1.0+HadTauStatUnc.GetBinContent(i)/HadTauPrediction.GetBinContent(i))
@@ -161,10 +227,12 @@ if __name__ == '__main__':
 		DYNJExtrapErrDn.SetBinContent(i,1.0/DYNJExtrapErrDn.GetBinContent(i))
 		#DoubleRatioErrDn.SetBinContent(i,1.0/DoubleRatioErrDn.GetBinContent(i))
 #AR-180515:HadTauStatUnc saves (1+stat_error/bincontent) error if prediction is non zero, else saves 1+stat_error
+	'''
 	for i in range(1, HadTauPrediction.GetNbinsX()+1):
 		print "i", i, "HadTauPrediction ", HadTauPrediction.GetBinContent(i),"HadTauStatUnc ", HadTauStatUnc.GetBinContent(i) 
 		if HadTauPrediction.GetBinContent(i)>0.0: HadTauStatUnc.SetBinContent(i,1.0+HadTauPrediction.GetBinError(i)/HadTauPrediction.GetBinContent(i));
 		else:HadTauStatUnc.SetBinContent(i,1.0+HadTauPrediction.GetBinError(i))
+	'''
 	# QCD R+$
 #AR-180427: various QCD prediction histograms
 	ratesForSignalRegion_QCDList = [];
@@ -230,10 +298,10 @@ if __name__ == '__main__':
 	for i in range(len(tagsForSignalRegion)): 	
 		tmpcontributions = [];
 		tmpcontributions.append('sig');
-		tmpcontributions.append('WTopSL');
-		tmpcontributions.append('WTopSLHighW');
-		tmpcontributions.append('WTopHad');
-		tmpcontributions.append('WTopHadHighW');
+		tmpcontributions.append('WTop');
+		#tmpcontributions.append('WTopSLHighW');
+#		tmpcontributions.append('WTopHad');
+		#tmpcontributions.append('WTopHadHighW');
 		tmpcontributions.append('zvv')
 		tmpcontributions.append('qcd')
 		contributionsPerBin.append(tmpcontributions) #AR: contributionsPerBin has saved seven elements' list per bin
@@ -258,10 +326,10 @@ if __name__ == '__main__':
 #tmpList has signal yield, LL prediction, it's avg TF, hadtau prediction, 0.25, Z prediction and QCD prediction
 
 		tmpList.append(CorrSigHist.GetBinContent(i+1)) #signal nominal yield
-		tmpList.append(LLPrediction_Hist.GetBinContent(i+1))
-		tmpList.append(LLAvgHeight_Hist.GetBinContent(i+1))
-		tmpList.append(HadTauPrediction.GetBinContent(i+1))
-		tmpList.append(0.25) 
+		tmpList.append(LLPlusHadTauPrediction_Hist.GetBinContent(i+1))
+		#tmpList.append(LLAvgHeight_Hist.GetBinContent(i+1))
+#		tmpList.append(HadTauPrediction.GetBinContent(i+1))
+		#tmpList.append(0.25) 
 		if GammaObs.GetBinContent(i+1)>0.0:tmpList.append(ZPred.GetBinContent(i+1)) 
 		else: tmpList.append(ZRatios.GetBinContent(i+1))
 		tmpList.append( qcdCV.GetBinContent(i+1) );
@@ -376,17 +444,16 @@ if __name__ == '__main__':
 
 
 	############
-#AR-180515:HadTauStatUnc saves (1+stat_error/bincontent) error if prediction is non zero, else saves 1+stat_error
-
-	signalRegion.addCorrelSystematicLine('lnN', ['WTopSL','WTopHad'],LLControlStatUnc_Hist,HadTauStatUnc)
 #AR-180516:CSZero and HadTauHighW as copy of LLAvgHeight_Hist
+	'''
 	CSZero=LLAvgHeight_Hist.Clone()	
 	HadTauHighW=LLAvgHeight_Hist.Clone()
 	for i in range(1,CSZero.GetNbinsX()+1): 
 		CSZero.SetBinContent(i,0.0) #makes CSZero histogram with bin content=0
 		HadTauHighW.SetBinContent(i,0.25) #makes HadTauHighW histogram with bin content 0.25
 		LLAvgHeight_Hist.GetXaxis().SetBinLabel(i,"HighWeightStatUnc_"+LLAvgHeight_Hist.GetXaxis().GetBinLabel(i)) #Ex. Reset bin label to HighWeightStatUnc_NJets0_BTags0_MHT0_HT0
-	signalRegion.addCorrelGammaSystematic(['WTopSLHighW','WTopHadHighW'],CSZero,LLAvgHeight_Hist,HadTauHighW)
+#	signalRegion.addCorrelGammaSystematic(['WTopSLHighW','WTopHadHighW'],CSZero,LLAvgHeight_Hist,HadTauHighW)
+        '''
 #GammaObs=DYinputfile.Get("hzvvgJNobs"), DYinputfile=ZinvHistos.root
 	for i in range(len(GammaObs)):GammaObs[i]=GammaObs[i]
 	signalRegion.addGammaSystematic(['zvv'],GammaObs,ZRatios )
@@ -424,30 +491,70 @@ if __name__ == '__main__':
         signalRegion.addSystematicsLine('lnN',['qcd'],QCDCoreUp)
         #signalRegion.addSystematicsLineAsymShape('lnN',['qcd'],QCDTrigUp,QCDTrigDn)
         #signalRegion.addSystematicsLineAsymShape('lnN',['qcd'],QCDTailUp,QCDTailDn)
-	HadTauClosureUnc=HadTau_file.Get("totalPredNonClosure_HadTau")		
-	HadTauClosureCorrUnc=HadTau_file.Get("totalPredAdhoc_HadTau")		
-	HadTauBMistagUp=HadTau_file.Get("totalPredBMistagUp_HadTau")
-	HadTauBMistagDn=HadTau_file.Get("totalPredBMistagDown_HadTau")
 
-	HadTauJECUp=HadTau_file.Get("totalPred_JECSysUp")
-	HadTauJECDn=HadTau_file.Get("totalPred_JECSysDown")
-	HadTauDiMuonUnc=HadTau_file.Get("totalPredDilep_HadTau")
-	HadTauMuFromTau=HadTau_file.Get("totalPredMuFromTauStat_HadTau")
+#AR-180515:HadTauStatUnc saves (1+stat_error/bincontent) error if prediction is non zero, else saves 1+stat_error
 
-	HadTauTrigEff=HadTau_file.Get("totalPredTrigSyst_HadTau")
+#	signalRegion.addCorrelSystematicLine('lnN', ['WTopSL','WTopHad'],LLControlStatUnc_Hist,HadTauStatUnc)
 
-	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauClosureUnc)
-	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauClosureCorrUnc)
-	signalRegion.addSystematicsLineAsymShape('lnN',['WTopHad'],HadTauBMistagUp,HadTauBMistagDn)
-	signalRegion.addSystematicsLineAsymShape('lnN',['WTopHad'],HadTauJECUp,HadTauJECDn)
-	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauDiMuonUnc)	
-	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauMuFromTau)	
-	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauTrigEff)	
+	signalRegion.addSystematicsLine('lnN', ['WTop'],LLPlusHadTauSysMTDn)
+	signalRegion.addSystematicsLine('lnN', ['WTop'],LLPlusHadTauSysIsoDn)
+	signalRegion.addSystematicsLine('lnN', ['WTop'],LLPlusHadTauSysRecoDn)
+	signalRegion.addGammaSystematic(['WTop'],LLPlusHadTauControlStatistics,LLPlusHadTauTF)
+
+
+	signalRegion.addSystematicsLine('lnN', ['WTop'],LLPlusHadTauTFStatUnc)
+	signalRegion.addSystematicsLine('lnN',['WTop'],LLPlusHadTauSysJECDn)
+	signalRegion.addSystematicsLine('lnN',['WTop'],LLPlusHadTauSysBMistagDn)
+	signalRegion.addSystematicsLine('lnN',['WTop'],LLPlusHadTauAccPDFSysDn)
+	signalRegion.addSystematicsLine('lnN',['WTop'],LLPlusHadTauQScaleSysDn)
+
+
+	'''
+
+
+
+	signalRegion.addCorrelSystematicLine('lnN', ['WTopSL','WTopHad'],LLSysMTDn,HadTauMTSysDn)
+	signalRegion.addCorrelSystematicLine('lnN', ['WTopSL','WTopHad'],LLSysIsoDn,HadTauMuIsoDn)
+	signalRegion.addCorrelSystematicLine('lnN', ['WTopSL','WTopHad'],LLSysRecoDn,HadTauMuRecoDn)
+	signalRegion.addCorrelGammaSystematic(['WTopSL','WTopHad'],LLControlStatistics,LLTF,HadTauTF)
+
+	signalRegion.addSystematicsLine('lnN', ['WTopHad'],HadTauTFStatUnc)
+	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauJECDn)
+	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauBMistagDn)
+	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauAccPDFSysDn)
+	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauAccQScaleDn)
+
+	signalRegion.addSystematicsLine('lnN', ['WTopSL'],LLTFStatUnc)
+	signalRegion.addSystematicsLine('lnN',['WTopSL'],LLSysJECDn)
+	signalRegion.addSystematicsLine('lnN',['WTopSL'],LLSysBMistagDn)
+	signalRegion.addSystematicsLine('lnN',['WTopSL'],LLAccPDFSysDn)
+	signalRegion.addSystematicsLine('lnN',['WTopSL'],LLQScaleSysDn)
+
+	'''
+
+#	HadTauClosureUnc=HadTauAvg_file.Get("totalPredNonClosure_HadTau")
+		
+#	HadTauClosureCorrUnc=HadTau_file.Get("totalPredAdhoc_HadTau")		
+#	HadTauBMistagUp=HadTau_file.Get("totalPredBMistagUp_HadTau")
+#	HadTauJECUp=HadTau_file.Get("totalPred_JECSysUp")
+#	HadTauDiMuonUnc=HadTau_file.Get("totalPredDilep_HadTau")
+#	HadTauMuFromTau=HadTau_file.Get("totalPredMuFromTauStat_HadTau")
+
+#	HadTauTrigEff=HadTau_file.Get("totalPredTrigSyst_HadTau")
+
+#	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauClosureUnc)
+#	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauClosureCorrUnc)
+#	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauBMistagDn)
+#	signalRegion.addCorrelAsymSystematicLine('lnN', ['WTopSL','WTopHad'],LLSysBMistagDn,LLSysBMistagDn,HadTauBMistagDn,HadTauBMistagDn)
+#	signalRegion.addCorrelAsymSystematicLine('lnN', ['WTopSL','WTopHad'],LLSysJECDn,LLSysJECDn,HadTauJECDn,HadTauJECDn)
+
+#	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauDiMuonUnc)	
+#	signalRegion.addSystematicsLine('lnN',['WTopHad'],HadTauMuFromTau)	
+#	signalRegion.addSystematicsLine('lnN',['WTop'],HadTauTrigEff)	
+	'''
 	HadTauMTSysUp=HadTau_file.Get("totalPredMTSysUp_HadTau")	
-	HadTauMTSysDn=HadTau_file.Get("totalPredMTSysDown_HadTau")	
 	LLSysMTUp=LL_file.Get("Prediction_data/totalPredMTWSysUp_LL")	
-	LLSysMTDn=LL_file.Get("Prediction_data/totalPredMTWSysDown_LL")	
-	signalRegion.addCorrelAsymSystematicLine('lnN', ['WTopSL','WTopHad'],LLSysMTUp,LLSysMTDn,HadTauMTSysUp,HadTauMTSysDn)	
+	signalRegion.addCorrelAsymSystematicLine('lnN', ['WTopSL','WTopHad'],LLSysMTDn,LLSysMTDn,HadTauMTSysDn,HadTauMTSysDn)	
 	HadTauMTEffStat=HadTau_file.Get("totalPredMtEffStat_HadTau")	
 	LLStatMTStatUp=LL_file.Get("Prediction_data/totalPredMTWStatUp_LL")	
 	LLStatMTStatDn=LL_file.Get("Prediction_data/totalPredMTWStatDown_LL")	
@@ -462,17 +569,14 @@ if __name__ == '__main__':
 #AR-180516: signalRegion.addCorrelAsymSystematicLine('lnN', ['WTopSL','WTopHad'],LLAccStatUp,LLAccStatDn,HadTauAccStat,HadTauAccStatDn)?
 	signalRegion.addCorrelAsymSystematicLine('lnN', ['WTopSL','WTopHad'],LLAccStatUp,LLAccStatDn,HadTauAccStat,LLAccStatDn)
 	HadTauAccPDFSysUp=HadTau_file.Get("totalPredPDFUp_LL")
-	HadTauAccPDFSysDn=HadTau_file.Get("totalPredPDFDown_LL")
 	LLAccPDFSysUp=LL_file.Get("Prediction_data/totalPredLepAccSysUp_LL")
-	LLAccPDFSysDn=LL_file.Get("Prediction_data/totalPredLepAccSysDown_LL")
-#AR-180516: signalRegion.addCorrelAsymSystematicLine('lnN',['WTopSL','WTopHad'],LLAccPDFSysUp,LLAccPDFSysDn, HadTauAccPDFSysUp,HadTauAccPDFSysDn)
-	signalRegion.addCorrelAsymSystematicLine('lnN',['WTopSL','WTopHad'],HadTauAccPDFSysUp,HadTauAccPDFSysDn, HadTauAccPDFSysUp,HadTauAccPDFSysDn)
+#AR-180516: signalRegion.addCorrelAsymSystematicLine('lnN',['WTopSL','WTopHad'],LLAccPDFSysUp,LLAccPDFSysDn, HadTauAccPDFSysUp,HadTauAccPDFSysDn)?
+#	signalRegion.addCorrelAsymSystematicLine('lnN',['WTopSL','WTopHad'],HadTauAccPDFSysUp,HadTauAccPDFSysDn, HadTauAccPDFSysUp,HadTauAccPDFSysDn)
 
 	HadTauAccQScaleUp=HadTau_file.Get("totalPredScaleUp_LL");
-	HadTauAccQScaleDn=HadTau_file.Get("totalPredScaleDown_LL");
 	LLQScaleSysUp=LL_file.Get("Prediction_data/totalPredLepAccQsquareSysUp_LL")
-	LLQScaleSysDn=LL_file.Get("Prediction_data/totalPredLepAccQsquareSysDown_LL")
-	signalRegion.addCorrelAsymSystematicLine('lnN',['WTopSL','WTopHad'],LLQScaleSysUp,LLQScaleSysDn, HadTauAccQScaleUp,HadTauAccQScaleDn)
+	signalRegion.addCorrelAsymSystematicLine('lnN', ['WTopSL','WTopHad'],LLQScaleSysDn,LLQScaleSysDn,HadTauAccQScaleDn,HadTauAccQScaleDn)
+#	signalRegion.addCorrelAsymSystematicLine('lnN',['WTopSL','WTopHad'],LLQScaleSysUp,LLQScaleSysDn, HadTauAccQScaleUp,HadTauAccQScaleDn)
 	LLIsoTrackStatUp=LL_file.Get("Prediction_data/totalPredIsoTrackStatUp_LL")
 	LLIsoTrackStatDn=LL_file.Get("Prediction_data/totalPredIsoTrackStatDown_LL")
 	HadTauIsoTrackStat=HadTau_file.Get("totalPredIsoTrackStat_LL")	
@@ -488,16 +592,17 @@ if __name__ == '__main__':
         for i in range(1,175):HadTauIsoTrackSysDn.SetBinContent(i,1.0/HadTauIsoTrackSys.GetBinContent(i))
         signalRegion.addCorrelAsymSystematicLine('lnN',['WTopSL','WTopHad'],LLIsoTrackSysUp,LLIsoTrackSysDn, HadTauIsoTrackSys,HadTauIsoTrackSysDn)
 	LLSysIsoUp=LL_file.Get("Prediction_data/totalPredMuIsoSysUp_LL")	
-	LLSysIsoDn=LL_file.Get("Prediction_data/totalPredMuIsoSysDown_LL")	
 	HadTauMuIsoUp=HadTau_file.Get("totalPredMuIsoSysUp_LL")
-	HadTauMuIsoDn=HadTau_file.Get("totalPredMuIsoSysDown_LL")
-
-	signalRegion.addCorrelAsymSystematicLine('lnN',['WTopSL','WTopHad'],LLSysIsoUp,LLSysIsoDn,HadTauMuIsoUp,HadTauMuIsoDn)
+	signalRegion.addCorrelAsymSystematicLine('lnN', ['WTopSL','WTopHad'],LLSysIsoDn,LLSysIsoDn,HadTauMuIsoDn,HadTauMuIsoDn)
+#	signalRegion.addCorrelAsymSystematicLine('lnN',['WTopSL','WTopHad'],LLSysIsoUp,LLSysIsoDn,HadTauMuIsoUp,HadTauMuIsoDn)
 	LLSysRecoUp=LL_file.Get("Prediction_data/totalPredMuRecoSysUp_LL")	
-	LLSysRecoDn=LL_file.Get("Prediction_data/totalPredMuRecoSysDown_LL")	
 	HadTauMuRecoUp=HadTau_file.Get("totalPredMuRecoSysUp_LL")
-	HadTauMuRecoDn=HadTau_file.Get("totalPredMuRecoSysDown_LL")
-	signalRegion.addCorrelAsymSystematicLine('lnN',['WTopSL','WTopHad'],LLSysRecoUp,LLSysRecoDn,HadTauMuRecoUp,HadTauMuRecoDn)
+	signalRegion.addCorrelAsymSystematicLine('lnN', ['WTopSL','WTopHad'],LLSysRecoDn,LLSysRecoDn,HadTauMuRecoDn,HadTauMuRecoDn)
+
+
+	'''
+#	signalRegion.addCorrelAsymSystematicLine('lnN',['WTopSL','WTopHad'],LLSysRecoUp,LLSysRecoDn,HadTauMuRecoUp,HadTauMuRecoDn)
+	'''
 	PredDir=LL_file.Get("Prediction_data")	
 	names = [k.GetName() for k in PredDir.GetListOfKeys()]
 	print "k.GetName() ", k.GetName()
@@ -514,6 +619,8 @@ if __name__ == '__main__':
 			DnErr=LL_file.Get("Prediction_data/%s" %(ndown))
 			if "totalPredNonClosure" in n or "Elec" in n or "DiLepContribution" in n : 
 				signalRegion.addSystematicsLineAsymShape('lnN',['WTopSL'],UpErr,DnErr)
+
+	'''
 	### QCD uncertainties ------------------------------------------------------------------------------
 	'''
 	if options.allBkgs or options.qcdOnly:	
